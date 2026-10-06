@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resume Matcher</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 800px; margin: 30px auto; padding: 0 15px; }
+    textarea { width: 100%; padding: 10px; margin: 6px 0 14px; box-sizing: border-box; }
+    button { padding: 10px 24px; background: #6c3fc5; color: white; border: none; border-radius: 6px; cursor: pointer; }
+    .error { color: #c0392b; }
+    .bar { background: #eee; border-radius: 8px; overflow: hidden; height: 22px; }
+    .fill { background: #6c3fc5; height: 100%; }
+    .tag { display: inline-block; padding: 4px 10px; margin: 3px; border-radius: 12px; }
+    .ok { background: #d4f5dd; }
+    .no { background: #fde0dd; }
+  </style>
+</head>
+<body>
+  <h1>Resume Matcher</h1>
+
+  <form method="POST">
+    <label>Your resume</label>
+    <textarea name="resume" rows="8">{{ request.form.resume }}</textarea>
+    <label>Job description</label>
+    <textarea name="job" rows="8">{{ request.form.job }}</textarea>
+    <button type="submit">Match</button>
+  </form>
+
+  {% if error %}
+    <p class="error">{{ error }}</p>
+  {% endif %}
+
+  {% if result %}
+    <h2>Match score: {{ result.score }}%</h2>
+    <div class="bar"><div class="fill" style="width: {{ result.score }}%"></div></div>
+    <p>Text similarity: {{ result.similarity }}%</p>
+
+    <h3>Matched skills</h3>
+    {% for s in result.matched %}<span class="tag ok">{{ s }}</span>{% else %}<p>None</p>{% endfor %}
+
+    <h3>Missing skills</h3>
+    {% for s in result.missing %}<span class="tag no">{{ s }}</span>{% else %}<p>None, great!</p>{% endfor %}
+  {% endif %}
+</body>
+</html>
